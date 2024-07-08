@@ -1,20 +1,35 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import { CartProvider } from './cart-context'
 
-ReactDOM.render(
-  <React.StrictMode>
-    <CartProvider>
-      <App />
-    </CartProvider>
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+import './index.scss';
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+import { useCartState } from 'cart-context';
+import CartItem from './CartItem';
+import CurrencyFormat from 'components/general/CurrencyFormat';
+
+function CartPage() {
+  const { products, totalQuantity, totalPrice } = useCartState();
+  const productIds = Object.keys(products).filter((id) => products[id]);
+
+  return (
+    <div className="cart">
+      <div className="cart__main">
+        <div className="cart__items">
+          {productIds.map((id) => (
+            <CartItem key={id} product={products[id]} />
+          ))}
+        </div>
+
+        <div className="cart__summary">
+          Subtotal ({totalQuantity} items):{' '}
+          <CurrencyFormat
+            className="bold"
+            currencyCode="INR"
+            value={totalPrice}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default CartPage;
